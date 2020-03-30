@@ -1,0 +1,129 @@
+CREATE TABLE test (
+    id_test         NUMBER(2) NOT NULL,
+    nombre          VARCHAR2(15 CHAR) NOT NULL,
+    descripcion     VARCHAR2(15 CHAR) NOT NULL,
+    programa        VARCHAR2(15 CHAR) NOT NULL,
+    unidad          VARCHAR2(15 CHAR) NOT NULL,
+    autor           VARCHAR2(15 CHAR) NOT NULL,
+    fecha_creacion  DATE NOT NULL,
+    CONSTRAINT test_pk PRIMARY KEY ( id_test )
+);
+
+CREATE TABLE preguntas (
+    id_preguntas  NUMBER(2) NOT NULL,
+    enunciado     VARCHAR2(15 CHAR) NOT NULL,
+    puntaje       NUMBER(3) NOT NULL,
+    test_id_test  NUMBER(2) NOT NULL,
+    CONSTRAINT preguntas_pk PRIMARY KEY ( id_preguntas ),
+    CONSTRAINT preguntas_test_fk FOREIGN KEY ( test_id_test )
+        REFERENCES test ( id_test )
+);
+
+CREATE TABLE alternativas (
+    id_alternativa          NUMBER(2) NOT NULL,
+    descripcion             VARCHAR2(15 CHAR) NOT NULL,
+    validacion              VARCHAR2(3 CHAR) NOT NULL,
+    porcentaje              NUMBER NOT NULL,
+    preguntas_id_preguntas  NUMBER(2) NOT NULL,
+    CONSTRAINT alternativas_pk PRIMARY KEY ( id_alternativa ),
+    CONSTRAINT alternativas_preguntas_fk FOREIGN KEY ( preguntas_id_preguntas )
+        REFERENCES preguntas ( id_preguntas )
+);
+
+CREATE TABLE cursos (
+    id_curso  NUMBER(2) NOT NULL,
+    nombre    VARCHAR2(15 CHAR) NOT NULL,
+    CONSTRAINT cursos_pk PRIMARY KEY ( id_curso )
+);
+
+CREATE TABLE alumnos (
+    rut     VARCHAR2(15 CHAR) NOT NULL,
+    nombre  VARCHAR2(15 CHAR) NOT NULL,
+    CONSTRAINT alumnos_pk PRIMARY KEY ( rut )
+);
+
+CREATE TABLE curso_alumnos (
+    id               NUMBER(2) NOT NULL,
+    cursos_id_curso  NUMBER(2) NOT NULL,
+    alumnos_rut      VARCHAR2(15 CHAR) NOT NULL,
+    CONSTRAINT curso_alumnos_pk PRIMARY KEY ( id ),
+    CONSTRAINT curso_alumnos_alumnos_fk FOREIGN KEY ( alumnos_rut )
+        REFERENCES alumnos ( rut ),
+    CONSTRAINT curso_alumnos_cursos_fk FOREIGN KEY ( cursos_id_curso )
+        REFERENCES cursos ( id_curso )
+);
+
+CREATE TABLE curso_test (
+    id               NUMBER(2) NOT NULL,
+    test_id_test     NUMBER(2) NOT NULL,
+    cursos_id_curso  NUMBER(2) NOT NULL,
+    CONSTRAINT curso_test_pk PRIMARY KEY ( id ),
+    CONSTRAINT curso_test_cursos_fk FOREIGN KEY ( cursos_id_curso )
+        REFERENCES cursos ( id_curso ),
+    CONSTRAINT curso_test_test_fk FOREIGN KEY ( test_id_test )
+        REFERENCES test ( id_test )
+);
+
+ALTER TABLE preguntas MODIFY(enunciado VARCHAR2(100 CHAR));
+
+ALTER TABLE alternativas MODIFY(descripcion VARCHAR2(100 CHAR));
+
+ALTER TABLE alternativas MODIFY(porcentaje DECIMAL(3,1));
+
+Insert into ALTERNATIVAS (ID_ALTERNATIVA,DESCRIPCION,VALIDACION,PORCENTAJE,PREGUNTAS_ID_PREGUNTAS) values ('3','b) El ratón pérez','-','0,5','2');
+Insert into ALTERNATIVAS (ID_ALTERNATIVA,DESCRIPCION,VALIDACION,PORCENTAJE,PREGUNTAS_ID_PREGUNTAS) values ('1','a) Cayendo del primer piso','-','1','1');
+Insert into ALTERNATIVAS (ID_ALTERNATIVA,DESCRIPCION,VALIDACION,PORCENTAJE,PREGUNTAS_ID_PREGUNTAS) values ('2','a) El tiburón','-','0,5','2');
+Insert into ALTERNATIVAS (ID_ALTERNATIVA,DESCRIPCION,VALIDACION,PORCENTAJE,PREGUNTAS_ID_PREGUNTAS) values ('4','a) Una Llave','-','0','3');
+Insert into ALTERNATIVAS (ID_ALTERNATIVA,DESCRIPCION,VALIDACION,PORCENTAJE,PREGUNTAS_ID_PREGUNTAS) values ('5','b) Que esté cerrada','-','1','3');
+Insert into ALTERNATIVAS (ID_ALTERNATIVA,DESCRIPCION,VALIDACION,PORCENTAJE,PREGUNTAS_ID_PREGUNTAS) values ('6','c) Empujar','-','0','3');
+
+Insert into CURSO_TEST (ID,TEST_ID_TEST,CURSOS_ID_CURSO) values ('1','1','1');
+Insert into CURSO_TEST (ID,TEST_ID_TEST,CURSOS_ID_CURSO) values ('2','2','1');
+Insert into CURSO_TEST (ID,TEST_ID_TEST,CURSOS_ID_CURSO) values ('3','1','2');
+Insert into CURSO_TEST (ID,TEST_ID_TEST,CURSOS_ID_CURSO) values ('4','3','3');
+Insert into CURSO_TEST (ID,TEST_ID_TEST,CURSOS_ID_CURSO) values ('5','3','1');
+
+Insert into CURSOS (ID_CURSO,NOMBRE) values ('1','Sala_DO');
+Insert into CURSOS (ID_CURSO,NOMBRE) values ('2','Sala_IF');
+Insert into CURSOS (ID_CURSO,NOMBRE) values ('3','Sala_ELSE');
+Insert into CURSOS (ID_CURSO,NOMBRE) values ('4','Sala_WHILE');
+Insert into CURSOS (ID_CURSO,NOMBRE) values ('5','Sala_FOR');
+
+Insert into PREGUNTAS (ID_PREGUNTAS,ENUNCIADO,PUNTAJE,TEST_ID_TEST) values ('1','¿Cómo puede sobrevivir alguien que cae de un edificio de 50 pisos?','10','3');
+Insert into PREGUNTAS (ID_PREGUNTAS,ENUNCIADO,PUNTAJE,TEST_ID_TEST) values ('2','¿Cuál es el animal con más dientes?','10','2');
+Insert into PREGUNTAS (ID_PREGUNTAS,ENUNCIADO,PUNTAJE,TEST_ID_TEST) values ('3','¿Qué se necesita para abrir una puerta?','10','2');
+Insert into PREGUNTAS (ID_PREGUNTAS,ENUNCIADO,PUNTAJE,TEST_ID_TEST) values ('4','¿Que es lo primero que le mete el hombre a la mujer cuando se casan?','10','2');
+Insert into PREGUNTAS (ID_PREGUNTAS,ENUNCIADO,PUNTAJE,TEST_ID_TEST) values ('5','Dos personas viajan en coche. La menor es hija de la mayor, pero la mayor no es su padre. ¿Quién es?','10','1');
+Insert into PREGUNTAS (ID_PREGUNTAS,ENUNCIADO,PUNTAJE,TEST_ID_TEST) values ('6','Ponedme de lado y seré todo. Cortadme a la mitad y seré nada. ¿Qué soy?','10','1');
+
+Insert into TEST (ID_TEST,NOMBRE,DESCRIPCION,PROGRAMA,UNIDAD,AUTOR,FECHA_CREACION) values ('4','ORACLE','-','FullStack','Provi','-',to_date('12/12/12','DD/MM/RR'));
+Insert into TEST (ID_TEST,NOMBRE,DESCRIPCION,PROGRAMA,UNIDAD,AUTOR,FECHA_CREACION) values ('1','PSEINT','-','FullStack','Provi','-',to_date('12/12/12','DD/MM/RR'));
+Insert into TEST (ID_TEST,NOMBRE,DESCRIPCION,PROGRAMA,UNIDAD,AUTOR,FECHA_CREACION) values ('2','JAVA','-','FullStack','Provi','-',to_date('12/12/12','DD/MM/RR'));
+Insert into TEST (ID_TEST,NOMBRE,DESCRIPCION,PROGRAMA,UNIDAD,AUTOR,FECHA_CREACION) values ('3','INGENIO','-','FullStack','Provi','-',to_date('12/12/12','DD/MM/RR'));
+
+
+--Conocer el número de evaluaciones por curso.
+SELECT cursos_id_curso AS Cursos, COUNT(test_id_test) AS Cant_Tests
+FROM curso_test
+GROUP BY cursos_id_curso;
+
+--Conocer los cursos sin evaluaciones
+SELECT *
+FROM cursos
+WHERE id_curso NOT IN (SELECT cursos_id_curso
+                        FROM curso_test);
+                        
+--Determinar las evaluaciones con deficiencia
+--a. Si no tiene preguntas.
+SELECT id_test, nombre
+FROM test
+WHERE id_test NOT IN (SELECT test_id_test
+                      FROM preguntas);
+--b. Si hay preguntas con 2 ó menos alternativas
+SELECT preguntas.enunciado, COUNT(alternativas.preguntas_id_preguntas) AS Cantidad
+FROM preguntas 
+INNER JOIN alternativas ON alternativas.preguntas_id_preguntas = preguntas.id_preguntas
+GROUP BY preguntas.enunciado;
+--c. Si todas las alternativas son correctas o si todas las alternativas son incorrectas.
+SELECT descripcion, porcentaje
+From alternativas;
